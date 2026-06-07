@@ -229,17 +229,17 @@ export default ({ data }: { data: { [string: string]: { order: number; list: Web
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {type === '全站置顶' && (
-                  <Link href="https://liuyuyang.net" target="_blank" className="group block h-full">
+                  <Link href="https://github.com/zxilong37" target="_blank" className="group block h-full">
                     <div className="h-full flex items-center p-5 bg-gradient-to-br from-primary/5 to-purple-500/5 dark:from-primary/10 dark:to-purple-500/10 border border-primary/20 dark:border-primary/30 rounded-2xl transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 hover:border-primary/50 relative overflow-hidden">
                       <div className="absolute top-0 right-0 px-2 py-1 bg-primary text-[10px] font-bold text-white rounded-bl-xl shadow-sm">OWNER</div>
                       <img
-                        src="https://q1.qlogo.cn/g?b=qq&nk=3311118881&s=640"
+                        src="https://q1.qlogo.cn/g?b=qq&nk=2069065992&s=640"
                         alt="项目作者"
                         className="w-16 h-16 rounded-full border-2 border-white dark:border-gray-700 shadow-md group-hover:rotate-6 transition-transform duration-300"
                       />
                       <div className="ml-4 flex-1 min-w-0">
-                        <h4 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-primary">宇阳</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2 font-medium">ThriveX 博客管理系统作者</p>
+                        <h4 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-primary">郑州 GIS 开发工程师</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2 font-medium">南京测绘院郑州 GIS 开发工程师</p>
                       </div>
                     </div>
                   </Link>

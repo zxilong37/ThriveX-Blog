@@ -7,7 +7,7 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   const webResponse = await getWebConfigDataAPI<{ value: Web }>('web');
   const webConfig = webResponse?.data?.value as Web;
 
-  const baseUrl = webConfig?.url || 'https://liuyuyang.net';
+  const baseUrl = webConfig?.url || 'https://github.com/zxilong37';
 
   return {
     rules: [

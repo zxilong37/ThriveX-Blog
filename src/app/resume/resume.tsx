@@ -10,10 +10,10 @@ export default ({ data }: { data: Resume }) => {
 
   const defaultPersonalInfo = {
     name: '神秘人',
-    title: '前端开发工程师',
+    title: 'GIS 开发工程师',
     age: '22岁',
     location: '中国',
-    avatar: 'https://q1.qlogo.cn/g?b=qq&nk=3311118881&s=640',
+    avatar: 'https://q1.qlogo.cn/g?b=qq&nk=2069065992&s=640',
     contact: {
       phone: '10000000000',
       email: 'example@example.com',
@@ -108,8 +108,8 @@ export default ({ data }: { data: Resume }) => {
 
   return (
     <>
-      <title>{`${safePersonalInfo.name || '匿名用户'} - ${safePersonalInfo.title || '前端开发工程师'}`}</title>
-      <meta name="description" content={`${safePersonalInfo.name || '匿名用户'} - ${safePersonalInfo.title || '前端开发工程师'} 的个人简历`} />
+      <title>{`${safePersonalInfo.name || '匿名用户'} - ${safePersonalInfo.title || 'GIS 开发工程师'}`}</title>
+      <meta name="description" content={`${safePersonalInfo.name || '匿名用户'} - ${safePersonalInfo.title || 'GIS 开发工程师'} 的个人简历`} />
 
       {/* 背景装饰 */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -133,7 +133,7 @@ export default ({ data }: { data: Resume }) => {
 
                 <div className="flex-1 text-center md:text-left">
                   <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{safePersonalInfo.name || '匿名用户'}</h1>
-                  <h2 className="font-semibold text-blue-600 dark:text-blue-400 mb-3">{safePersonalInfo.title || '前端开发工程师'}</h2>
+                  <h2 className="font-semibold text-blue-600 dark:text-blue-400 mb-3">{safePersonalInfo.title || 'GIS 开发工程师'}</h2>
 
                   <div className="flex flex-wrap justify-center md:justify-start gap-4 text-gray-600 dark:text-gray-300 mb-4">
                     <span className="flex items-center text-sm">

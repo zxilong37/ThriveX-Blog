@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const webResponse = await getWebConfigDataAPI<{ value: Web }>('web');
   const webConfig = webResponse?.data?.value as Web;
 
-  const baseUrl = webConfig?.url ?? 'https://liuyuyang.net';
+  const baseUrl = webConfig?.url ?? 'https://github.com/zxilong37';
 
   // 获取所有文章
   const res = await getArticleListAPI();

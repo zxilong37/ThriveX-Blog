@@ -7,7 +7,7 @@ interface SummaryProps {
 }
 
 const suggestions = [
-  '谁是刘宇阳？',
+  '谁是郑州 GIS 开发工程师？',
   '这篇文章讲了什么？',
   '带我去看看其他文章',
 ];

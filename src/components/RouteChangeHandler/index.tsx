@@ -12,8 +12,8 @@ const RouteChangeHandler: React.FC = () => {
     // 尊重开源，禁止删除此版权信息！！！
     console.log(`%c 博客系统 %c ThriveX `, 'background: #35495e; padding: 4px; border-radius: 3px 0 0 3px; color: #fff', 'background: #539dfd; padding: 4px; border-radius: 0 3px 3px 0; color: #fff');
     console.log('🚀 欢迎使用 ThriveX 现代化博客管理系统');
-    console.log('🎉 开源地址：https://github.com/LiuYuYang01/ThriveX-Blog');
-    console.log('🏕 作者主页：https://liuyuyang.net');
+    console.log('🎉 开源地址：https://github.com/zxilong37/ThriveX-Blog');
+    console.log('🏕 作者主页：https://github.com/zxilong37');
     console.log('🌟 觉得好用的话记得点个 Star 哦 🙏');
 
     window.scrollTo(0, 0);

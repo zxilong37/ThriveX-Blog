@@ -14,63 +14,69 @@ import RouteChangeHandler from '@/components/RouteChangeHandler';
 import { getWebConfigDataAPI } from '@/api/config';
 import { Web } from '@/types/app/config';
 
-// 加载样式文件
 import '@/styles/index.scss';
 import '@/styles/tailwind.scss';
 import BaiduStatis from '@/components/BaiduStatis';
 import FloatingBlock from '@/components/FloatingBlock';
 import InjectData from '@/components/InjectData';
 
-// 加载本地字体
 const LXGWWenKai = localFont({
   src: '../assets/font/LXGWWenKai-Regular.ttf',
   display: 'swap',
 });
 
-// 生成动态metadata
+const defaultTitle = '郑州 GIS 开发工程师';
+const defaultSubhead = '南京测绘院 · 测绘地理信息 · WebGIS';
+const defaultDescription = '记录测绘地理信息、WebGIS、空间数据治理和工程实践的个人博客。';
+const defaultKeywords = 'GIS,WebGIS,测绘,空间数据,南京测绘院,郑州 GIS 开发工程师';
+
 export async function generateMetadata(): Promise<Metadata> {
   const response = await getWebConfigDataAPI<{ value: Web }>('web');
   const data = response?.data?.value as Web;
 
+  const title = data?.title ?? defaultTitle;
+  const subhead = data?.subhead ?? defaultSubhead;
+  const description = data?.description ?? defaultDescription;
+
   return {
     title: {
-      default: `${data?.title ?? 'ThriveX'} - ${data?.subhead ?? '现代化博客管理系统'}`,
-      template: `%s | ${data?.title ?? 'ThriveX'}`,
+      default: `${title} - ${subhead}`,
+      template: `%s | ${title}`,
     },
-    description: data?.description ?? 'ThriveX 现代化博客管理系统',
-    keywords: data?.keyword ?? 'ThriveX,博客,Blog',
-    authors: [{ name: data?.title ?? 'ThriveX' }],
-    creator: data?.title ?? 'ThriveX',
-    publisher: data?.title ?? 'ThriveX',
+    description,
+    keywords: data?.keyword ?? defaultKeywords,
+    authors: [{ name: title }],
+    creator: title,
+    publisher: title,
     formatDetection: {
       email: false,
       address: false,
       telephone: false,
     },
-    metadataBase: new URL(data?.url ?? 'https://liuyuyang.net'),
+    metadataBase: new URL(data?.url ?? 'https://github.com/zxilong37'),
     alternates: {
       canonical: '/',
     },
     openGraph: {
       type: 'website',
       locale: 'zh_CN',
-      url: data?.url ?? 'https://liuyuyang.net',
-      title: `${data?.title ?? 'ThriveX'} - ${data?.subhead ?? '现代化博客管理系统'}`,
-      description: data?.description ?? 'ThriveX 现代化博客管理系统',
-      siteName: data?.title ?? 'ThriveX',
+      url: data?.url ?? 'https://github.com/zxilong37',
+      title: `${title} - ${subhead}`,
+      description,
+      siteName: title,
       images: [
         {
           url: data?.favicon ?? '/favicon.ico',
           width: 1200,
           height: 630,
-          alt: data?.title ?? 'ThriveX',
+          alt: title,
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${data?.title ?? 'ThriveX'} - ${data?.subhead ?? '现代化博客管理系统'}`,
-      description: data?.description ?? 'ThriveX 现代化博客管理系统',
+      title: `${title} - ${subhead}`,
+      description,
       images: [data?.favicon ?? '/favicon.ico'],
     },
     robots: {
@@ -97,9 +103,8 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const data = response?.data?.value as Web;
 
   return (
-    <html lang="zh-CN" className={LXGWWenKai.className}>
+    <html lang="zh-CN" className={LXGWWenKai.className} suppressHydrationWarning>
       <head>
-        {/* 动态favicon */}
         {data?.favicon && (
           <>
             <link rel="icon" type="image/x-icon" href={data.favicon} />
@@ -107,35 +112,24 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <link rel="apple-touch-icon" href={data.favicon} />
           </>
         )}
-        {/* 百度统计 */}
         <BaiduStatis />
       </head>
 
-      {/* 监听路由变化 */}
-      <RouteChangeHandler />
-
-      <body id="root" className={`dark:!bg-black-a`}>
-        {/* 数据注入 */}
+      <body id="root" className="dark:!bg-black-a">
+        <RouteChangeHandler />
         <InjectData />
-        {/* 🎉 礼花效果 */}
         {/* <Confetti /> */}
 
-        {/* 进度条组件 */}
         <NProgress />
-        {/* 顶部导航组件 */}
         <Header />
 
-        {/* 主体内容 */}
         <HeroUIProvider>
           <div className="min-h-[calc(100vh-300px)]">{children}</div>
         </HeroUIProvider>
 
-        {/* 底部组件 */}
         <Footer />
-        {/* 右侧工具栏组件 */}
         {/* <Tools /> */}
 
-        {/* 悬浮块 */}
         <FloatingBlock />
       </body>
     </html>
