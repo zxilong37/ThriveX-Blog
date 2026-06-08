@@ -3,14 +3,17 @@ import { Cate } from '@/types/app/cate';
 import Link from 'next/link';
 import { IoIosArrowDown } from 'react-icons/io';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FiLogIn, FiLogOut, FiPenTool } from 'react-icons/fi';
 
 interface Props {
   list: Cate[];
   open: boolean;
   onClose: () => void;
+  isLoggedIn?: boolean;
+  onLogout?: () => void;
 }
 
-export default ({ list, open, onClose }: Props) => {
+export default ({ list, open, onClose, isLoggedIn, onLogout }: Props) => {
   return (
     <>
       <AnimatePresence>
@@ -18,6 +21,29 @@ export default ({ list, open, onClose }: Props) => {
           <div className="flex fixed top-0 left-0 w-full h-full z-[60]">
             <motion.div initial={{ width: 0, opacity: 0 }} animate={{ width: '100%', opacity: 1 }} exit={{ width: 0, opacity: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 30, opacity: { duration: 0.2 } }} className="overflow-auto p-5 dark:border-[#2b333e] bg-[rgba(255,255,255,0.9)] dark:bg-[rgba(44,51,62,0.9)] backdrop-blur-[5px] hide_sliding">
               <ul className="flex flex-col space-y-2">
+                <li>
+                  <Link href="/publish" className="mb-2 flex items-center gap-3 rounded-[8px] bg-[#1e3a2f] p-3 px-5 text-[15px] font-bold text-white" onClick={onClose}>
+                    <FiPenTool /> 发布文章
+                  </Link>
+                </li>
+                <li>
+                  {isLoggedIn ? (
+                    <button
+                      type="button"
+                      className="mb-2 flex w-full items-center gap-3 rounded-[8px] bg-white p-3 px-5 text-[15px] font-bold text-[#1e3a2f] ring-1 ring-slate-200 dark:bg-slate-900 dark:text-white dark:ring-slate-800"
+                      onClick={() => {
+                        onLogout?.();
+                        onClose();
+                      }}
+                    >
+                      <FiLogOut /> 退出登录
+                    </button>
+                  ) : (
+                    <Link href="/publish" className="mb-2 flex items-center gap-3 rounded-[8px] bg-white p-3 px-5 text-[15px] font-bold text-[#1e3a2f] ring-1 ring-slate-200 dark:bg-slate-900 dark:text-white dark:ring-slate-800" onClick={onClose}>
+                      <FiLogIn /> 登录
+                    </Link>
+                  )}
+                </li>
                 {list?.map((one) => (
                   <div key={one.id}>
                     {one.type === 'cate' && (

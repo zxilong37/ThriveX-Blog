@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Switch } from '@heroui/react';
 import Show from '@/components/Show';
@@ -11,145 +11,155 @@ import SidebarNav from './components/SidebarNav';
 import { IoIosArrowDown } from 'react-icons/io';
 import { FaRegSun } from 'react-icons/fa';
 import { BsFillMoonStarsFill, BsTextIndentLeft } from 'react-icons/bs';
+import { FiLogIn, FiLogOut, FiPenTool } from 'react-icons/fi';
 
 import { Cate } from '@/types/app/cate';
 import { getCateListAPI } from '@/api/cate';
 
 import { useConfigStore } from '@/stores';
 
-export default () => {
-  const patchName = usePathname();
+const authTokenKey = 'thrivex_blog_token';
+const authUserKey = 'thrivex_blog_user';
+const authChangedEvent = 'thrivex-auth-changed';
 
+export default function Header() {
+  const patchName = usePathname();
   const { isDark, setIsDark, theme } = useConfigStore();
 
-  // 这些路径段不需要改变导航样式
-  const isPathSty = ['/my', '/wall', '/record', '/equipment', '/tags', '/resume', '/album', '/fishpond', '/friend'].some((path) => patchName.includes(path));
-  // 是否改变导航样式
+  const stableStylePaths = ['/my', '/wall', '/record', '/equipment', '/tags', '/resume', '/album', '/fishpond', '/friend', '/publish', '/reports'];
+  const isPathSty = stableStylePaths.some((path) => patchName.includes(path));
   const [isScrolled, setIsScrolled] = useState(false);
+  const [cateList, setCateList] = useState<Cate[]>([]);
+  const [isOpenSidebarNav, setIsOpenSidebarNav] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [authName, setAuthName] = useState('');
   const logoSrc = isDark ? theme?.dark_logo : isPathSty || isScrolled ? theme?.light_logo : theme?.dark_logo;
 
-  // 获取分类列表
-  const [cateList, setCateList] = useState<Cate[]>([]);
   const getCateList = async () => {
     const { data } = await getCateListAPI();
     setCateList(data?.result ?? []);
   };
 
   useEffect(() => {
-    // 监听系统主题变化
     const mediaQuery = matchMedia('(prefers-color-scheme: dark)');
-    mediaQuery.addEventListener('change', (e: MediaQueryListEvent) => {
-      setIsDark(e.matches);
-    });
+    const handleThemeChange = (e: MediaQueryListEvent) => setIsDark(e.matches);
+    const handleScroll = () => setIsScrolled(window.scrollY > 100);
+    const syncAuth = () => {
+      const token = localStorage.getItem(authTokenKey);
+      const user = localStorage.getItem(authUserKey);
+      setIsLoggedIn(!!token);
 
-    getCateList();
+      if (!user) {
+        setAuthName('');
+        return;
+      }
 
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100);
+      try {
+        setAuthName(JSON.parse(user)?.name ?? '');
+      } catch {
+        setAuthName('');
+      }
     };
 
+    mediaQuery.addEventListener('change', handleThemeChange);
     window.addEventListener('scroll', handleScroll);
+    window.addEventListener('storage', syncAuth);
+    window.addEventListener(authChangedEvent, syncAuth);
+    getCateList();
+    syncAuth();
+    handleScroll();
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      mediaQuery.removeEventListener('change', handleThemeChange);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('storage', syncAuth);
+      window.removeEventListener(authChangedEvent, syncAuth);
+    };
   }, []);
 
-  // 手动切换主题
-  const toTheme = () => {
-    setIsDark(!isDark);
-  };
-  // 判断当前主题
   useEffect(() => {
-    const html = document.querySelector('html');
-    if (html && html.classList) {
-      html?.classList?.toggle('dark', isDark);
-    }
+    document.querySelector('html')?.classList?.toggle('dark', isDark);
   }, [isDark]);
 
-  // 是否打开侧边栏导航
-  const [isOpenSidebarNav, setIsOpenSidebarNav] = useState(false);
+  const logout = () => {
+    localStorage.removeItem(authTokenKey);
+    localStorage.removeItem(authUserKey);
+    setIsLoggedIn(false);
+    setAuthName('');
+    window.dispatchEvent(new Event(authChangedEvent));
+  };
+
+  const headerTone = isPathSty || isScrolled ? 'border-white/70 bg-white/85 text-[#222a31] backdrop-blur-xl dark:border-slate-800/80 dark:bg-[#141a22]/90 dark:text-white' : 'border-white/20 bg-black/18 text-white backdrop-blur-md';
 
   return (
     <>
-      <div className={`header fixed top-0 w-full h-16 z-50 after:content-[''] after:block after:w-full after:h-0 after:bg-[linear-gradient(#fff,transparent_70%)] dark:after:bg-[linear-gradient(#2b333e,transparent_70%)] ${isPathSty || isScrolled ? 'bg-[rgba(255,255,255,0.5)] dark:bg-[rgba(44,51,62,0.7)] backdrop-blur-md border-b dark:border-[#2b333e] after:!h-8 after:transition-height]' : 'border-transparent'}`}>
-        <div className="relative flex justify-center lg:justify-start w-full lg:w-[1500px] h-16 mx-auto">
-          <div className={`lg:hidden group absolute top-0 left-0 h-full py-2 px-3 pl-7 ${isPathSty || isScrolled ? 'hover:bg-[#e9edf4] dark:hover:bg-[#455162] rounded-lg' : ''} cursor-pointer  `} onClick={() => setIsOpenSidebarNav(true)}>
-            <BsTextIndentLeft className={`group-hover:text-primary h-full text-[30px] ${isPathSty || isScrolled ? 'text-[#333] dark:text-white' : 'text-white'}  `} />
-          </div>
+      <div className="header fixed top-0 z-50 w-full px-3 pt-3">
+        <div className={`relative mx-auto flex h-14 w-full max-w-[1360px] items-center rounded-[8px] border px-3 shadow-[0_18px_70px_rgba(23,30,38,0.12)] transition ${headerTone}`}>
+          <button type="button" className="mr-1 grid size-10 place-items-center rounded-[6px] transition hover:bg-black/5 dark:hover:bg-white/10 lg:hidden" onClick={() => setIsOpenSidebarNav(true)} aria-label="打开导航">
+            <BsTextIndentLeft className="text-[24px]" />
+          </button>
 
-          {/* logo */}
-          <Link href="/" className="flex items-center p-5 text-[15px]  ">
-            {logoSrc ? <img src={logoSrc} alt="Logo" className="min-w-32 h-10 pr-5 hover:scale-90 transition-transform" /> : <span className="min-w-32 h-10 pr-5 inline-flex items-center font-semibold tracking-[0.3em] text-white">THRIVE</span>}
+          <Link href="/" className="mr-3 flex min-w-[128px] items-center gap-2 rounded-[6px] px-3 py-2 text-[15px]">
+            {logoSrc ? <img src={logoSrc} alt="Logo" className="h-8 max-w-32 object-contain transition-transform hover:scale-95" /> : <span className="inline-flex items-center font-semibold tracking-[0.3em]">THRIVE</span>}
           </Link>
 
-          <ul className="hidden lg:flex items-center h-16">
+          <ul className="hidden flex-1 items-center gap-1 lg:flex">
             <li className="group/one relative">
-              <Link href="/" className={`flex items-center p-5 text-[15px] group-hover/one:!text-primary   ${isPathSty || isScrolled ? 'text-[#333] dark:text-white' : 'text-white'}`}>
-                💎 首页
+              <Link href="/" className={`flex items-center rounded-[6px] px-4 py-2 text-[14px] font-semibold transition group-hover/one:!text-primary ${patchName === '/' ? 'bg-white text-[#1d2a32] shadow-sm dark:bg-slate-800 dark:text-white' : 'hover:bg-white/55 dark:hover:bg-white/10'}`}>
+                首页
               </Link>
             </li>
 
-            {/* 文章分类 */}
             {cateList?.map((one) => (
-              <div key={one.id}>
-                {/* 渲染分类 */}
-                {one.type === 'cate' && (
-                  <li className="group/one relative">
-                    <Link href={`/cate/${one.id}?name=${one.name}`} target={`${one.url.startsWith('http') ? '_blank' : '_self'}`} className={`flex items-center p-5 text-[15px] group-hover/one:!text-primary   ${isPathSty || isScrolled ? 'text-[#333] dark:text-white' : 'text-white'}`}>
-                      {one.icon} {one.name}
-                      <Show is={!!one.children.length}>
-                        <IoIosArrowDown className="ml-2" />
-                      </Show>
-                    </Link>
+              <li key={one.id} className="group/one relative">
+                <Link href={one.type === 'cate' ? `/cate/${one.id}?name=${one.name}` : one.url} target={`${one.url.startsWith('http') ? '_blank' : '_self'}`} className="flex items-center rounded-[6px] px-4 py-2 text-[14px] font-semibold transition hover:bg-white/55 group-hover/one:!text-primary dark:hover:bg-white/10">
+                  <span className="mr-1.5">{one.icon}</span>
+                  {one.name}
+                  <Show is={!!one.children?.length}>
+                    <IoIosArrowDown className="ml-2 text-[13px]" />
+                  </Show>
+                </Link>
 
-                    <Show is={!!one.children.length}>
-                      <ul className="hidden group-hover/one:block overflow-hidden absolute top-[50px] w-full rounded-md backdrop-blur-[5px] bg-[rgba(255,255,255,0.95)] dark:bg-[rgba(44,51,62,0.95)]" style={{ boxShadow: '0 12px 32px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.08)' }}>
-                        {one.children?.map((two) => (
-                          <li key={two.id} className="group/two">
-                            <Link href={`/cate/${two.id}?name=${two.name}`} target={`${two.url.startsWith('http') ? '_blank' : '_self'}`} className="relative inline-block w-full p-2.5 text-[15px] box-border text-[#666] dark:text-white hover:!text-primary transition-[padding] after:content-[''] after:absolute after:left-2.5 after:top-1/2 after:-translate-y-1/2 after:w-0 after:h-[3px] after:bg-primary after:transition-[width] group-hover/two:bg-[#f2f2f2] dark:group-hover/two:bg-[#323e50] group-hover/two:pl-8 hover:after:w-2.5">
-                              {two.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </Show>
-                  </li>
-                )}
-
-                {/* 渲染导航 */}
-                {one.type === 'nav' && (
-                  <li className="group/one relative">
-                    <Link href={one.url} className={`flex items-center p-5 px-10 text-[15px] group-hover/one:!text-primary ${isPathSty || isScrolled ? 'text-[#333] dark:text-white' : 'text-white'}`}>
-                      {one.icon} {one.name}
-                      {/* 如果有子分类就显示下拉三角 */}
-                      <Show is={!!one.children?.length}>
-                        <IoIosArrowDown className="ml-2" />
-                      </Show>
-                    </Link>
-
-                    <Show is={!!one.children?.length}>
-                      <ul className="hidden group-hover/one:block overflow-hidden absolute top-[50px] w-full rounded-md bg-[rgba(255,255,255,0.95)] dark:bg-[rgba(44,51,62,0.95)]" style={{ boxShadow: '0 12px 32px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.08)' }}>
-                        {one.children?.map((two) => (
-                          <li key={two.id} className="group/two relative">
-                            <Link href={two.url} className={`relative inline-block w-full p-2.5 pl-5 text-[15px] box-border text-[#666] dark:text-white hover:!text-primary transition-[padding] after:content-[''] after:absolute after:left-2.5 after:top-1/2 after:-translate-y-1/2 after:w-0 after:h-[3px] after:bg-primary after:transition-[width] group-hover/two:pl-8 hover:after:w-2.5`}>
-                              {two.icon} {two.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </Show>
-                  </li>
-                )}
-              </div>
+                <Show is={!!one.children?.length}>
+                  <ul className="absolute top-[42px] hidden min-w-[170px] overflow-hidden rounded-[8px] border border-white/70 bg-white/95 p-1 shadow-[0_18px_44px_rgba(16,24,40,0.16)] backdrop-blur-xl group-hover/one:block dark:border-slate-800 dark:bg-[#151b24]/95">
+                    {one.children?.map((two) => (
+                      <li key={two.id} className="group/two relative">
+                        <Link href={two.type === 'cate' ? `/cate/${two.id}?name=${two.name}` : two.url} target={`${two.url.startsWith('http') ? '_blank' : '_self'}`} className="inline-block w-full rounded-[6px] px-3 py-2 text-[14px] text-[#4c5662] transition hover:bg-[#edf4ff] hover:text-primary dark:text-slate-200 dark:hover:bg-slate-800">
+                          {two.icon} {two.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </Show>
+              </li>
             ))}
           </ul>
 
-          {/* 主题切换开关 */}
-          <Switch size="lg" isSelected={isDark} onValueChange={toTheme} thumbIcon={({ isSelected }) => (isSelected ? <BsFillMoonStarsFill className="text-gray-500" /> : <FaRegSun className="text-gray-500" />)} className={`absolute top-0 right-7 h-full ${isDark ? '[&>.bg-default-200]:!bg-[#4e5969]' : '[&>.bg-default-200]:!bg-[#e1e1e1]'}`} />
+          <div className="ml-auto hidden items-center gap-2 lg:flex">
+            <Link href="/publish" className={`inline-flex items-center gap-2 rounded-[6px] px-4 py-2 text-sm font-black transition ${patchName === '/publish' ? 'bg-[#17231d] text-white dark:bg-white dark:text-slate-950' : 'bg-[#edf6ef] text-[#173327] hover:bg-[#dbeee0] dark:bg-emerald-950/40 dark:text-emerald-100 dark:hover:bg-emerald-900/50'}`}>
+              <FiPenTool /> 发布文章
+            </Link>
+
+            {isLoggedIn ? (
+              <button type="button" onClick={logout} className="inline-flex items-center gap-2 rounded-[6px] px-3 py-2 text-sm font-semibold transition hover:bg-white/55 dark:hover:bg-white/10" title={authName || '退出登录'}>
+                <FiLogOut /> 退出
+              </button>
+            ) : (
+              <Link href="/publish" className="inline-flex items-center gap-2 rounded-[6px] px-3 py-2 text-sm font-semibold transition hover:bg-white/55 dark:hover:bg-white/10">
+                <FiLogIn /> 登录
+              </Link>
+            )}
+
+            <Switch aria-label="切换深色模式" size="sm" isSelected={isDark} onValueChange={() => setIsDark(!isDark)} thumbIcon={({ isSelected }) => (isSelected ? <BsFillMoonStarsFill className="text-gray-500" /> : <FaRegSun className="text-gray-500" />)} className={`${isDark ? '[&>.bg-default-200]:!bg-[#4e5969]' : '[&>.bg-default-200]:!bg-[#e1e1e1]'}`} />
+          </div>
+
+          <div className="ml-auto lg:hidden">
+            <Switch aria-label="切换深色模式" size="sm" isSelected={isDark} onValueChange={() => setIsDark(!isDark)} thumbIcon={({ isSelected }) => (isSelected ? <BsFillMoonStarsFill className="text-gray-500" /> : <FaRegSun className="text-gray-500" />)} />
+          </div>
         </div>
       </div>
 
-      {/* 侧边导航：移动端时候显示 */}
-      <SidebarNav list={cateList} open={isOpenSidebarNav} onClose={() => setIsOpenSidebarNav(false)} />
+      <SidebarNav list={cateList} open={isOpenSidebarNav} onClose={() => setIsOpenSidebarNav(false)} isLoggedIn={isLoggedIn} onLogout={logout} />
     </>
   );
-};
+}

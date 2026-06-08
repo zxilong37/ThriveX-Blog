@@ -41,9 +41,9 @@ export default function ICPBeian({ icp }: ICPBeianProps) {
   const isHtml = icp.includes('<') || icp.includes('script');
 
   return (
-    <div className="flex flex-col items-center gap-2 pb-4">
+    <div className="flex min-w-0 flex-col items-center gap-2 lg:items-start">
       {/* ICP备案 - 纯文本显示图标+链接，HTML直接渲染 */}
-      <div className="group flex justify-center items-center space-x-2 cursor-pointer">
+      <div className="group flex min-w-0 cursor-pointer items-center justify-center gap-2 text-sm">
         {!isHtml && (
           <Image src={ICPIcon} alt="ICP" width={20} height={22} className="w-5 h-[22px]" />
         )}
@@ -54,7 +54,7 @@ export default function ICPBeian({ icp }: ICPBeianProps) {
             href="https://beian.miit.gov.cn"
             target="_blank"
             rel="noopener noreferrer"
-            className="group-hover:text-primary"
+            className="truncate group-hover:text-primary"
           >
             {icp}
           </a>
