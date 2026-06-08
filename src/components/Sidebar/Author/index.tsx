@@ -13,6 +13,8 @@ import { getAuthorDataAPI } from '@/api/user';
 import { getWebConfigDataAPI } from '@/api/config';
 import { Social, Theme } from '@/types/app/config';
 
+const DEFAULT_AVATAR = 'https://q1.qlogo.cn/g?b=qq&nk=2069065992&s=640';
+
 const Author = async () => {
   const { data: user } = await getAuthorDataAPI();
   const themeResponse = await getWebConfigDataAPI<{ value: Theme }>('theme');
@@ -43,7 +45,7 @@ const Author = async () => {
     >
       {/* 作者头像 */}
       <div className="avatar flex justify-center items-center w-[90px] h-[90px] rounded-full bg-white shadow-md overflow-hidden">
-        <img src={user?.avatar} alt="" className="w-[90%] h-[90%] rounded-full transition-transform hover:scale-110" />
+        <img src={user?.avatar || DEFAULT_AVATAR} alt="" className="w-[90%] h-[90%] rounded-full transition-transform hover:scale-110" />
       </div>
 
       {/* 作者介绍 */}
@@ -59,11 +61,16 @@ const Author = async () => {
         </div>
 
         <div className="list flex justify-evenly w-[70%] mx-auto pt-6">
-          {socialList?.map((item: Social, index: number) => (
-            <a key={index} href={item?.url} target="_blank" rel="noopener noreferrer">
-              <Image src={getIcon(item?.name)} alt={item?.name} title={item?.name} className="w-[23px] h-[23px]" />
-            </a>
-          ))}
+          {socialList?.map((item: Social, index: number) => {
+            const icon = getIcon(item?.name);
+            if (!item?.url || !icon) return null;
+
+            return (
+              <a key={index} href={item.url} target="_blank" rel="noopener noreferrer">
+                <Image src={icon} alt={item.name} title={item.name} className="w-[23px] h-[23px]" />
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>

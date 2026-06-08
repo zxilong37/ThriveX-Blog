@@ -82,7 +82,11 @@ export default async () => {
                       {/* 修复了一点小细节：给 bg-white 加上 /20，不然在浅色模式下可能会太白挡住原产品图 */}
                       <div className="absolute inset-0 bg-white/20 dark:bg-black/20 backdrop-blur-[2px]" />
 
-                      <img src={item.image} alt={item.name} className="relative z-10 h-full w-full object-contain transform transition-transform duration-700 ease-out group-hover:scale-110" />
+                      {item.image ? (
+                        <img src={item.image} alt={item.name} className="relative z-10 h-full w-full object-contain transform transition-transform duration-700 ease-out group-hover:scale-110" />
+                      ) : (
+                        <div className="relative z-10 flex h-full w-full items-center justify-center text-sm text-zinc-400">暂无图片</div>
+                      )}
                     </div>
 
                     <div className="p-6 flex flex-col flex-1 bg-white dark:bg-zinc-900">

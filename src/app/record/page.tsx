@@ -12,6 +12,8 @@ import Loading from '@/components/Loading';
 import { getWebConfigDataAPI } from '@/api/config';
 import { Theme } from '@/types/app/config';
 
+const DEFAULT_AVATAR = 'https://q1.qlogo.cn/g?b=qq&nk=2069065992&s=640';
+
 export default () => {
   const [records, setRecords] = useState<Record[]>([]);
   const [user, setUser] = useState<User | null>(null);
@@ -127,7 +129,7 @@ export default () => {
         <div className="max-w-2xl mx-auto">
           {/* 顶部标题区 */}
           <header className="flex items-center flex-col p-6 sm:p-8 mb-12 rounded-2xl bg-white dark:bg-black-b shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:shadow-none border border-slate-100 dark:border-black-b bg-[url('https://bu.dusays.com/2025/12/04/6930fe4e06985.jpg')] bg-no-repeat bg-center bg-cover text-center">
-            <img src={user?.avatar || ''} alt="作者头像" width={80} height={80} className="w-20 h-20 rounded-full object-cover ring-4 ring-white/30 dark:ring-slate-800/50 shadow-lg avatar-animation" />
+            <img src={user?.avatar || DEFAULT_AVATAR} alt="作者头像" width={80} height={80} className="w-20 h-20 rounded-full object-cover ring-4 ring-white/30 dark:ring-slate-800/50 shadow-lg avatar-animation" />
             <h1 className="mt-4 text-2xl sm:text-3xl font-serif font-bold text-white tracking-tight drop-shadow-sm">{theme?.record_name}</h1>
             <p className="mt-2 text-sm text-white/90 drop-shadow-sm">{theme?.record_info}</p>
           </header>

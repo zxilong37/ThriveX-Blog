@@ -250,7 +250,7 @@ export default ({ data }: { data: { [string: string]: { order: number; list: Web
                     {type === '全站置顶' ? (
                       <div className="h-full flex items-center p-5 bg-gradient-to-br from-primary/5 to-purple-500/5 dark:from-primary/10 dark:to-purple-500/10 border border-primary/20 dark:border-primary/30 rounded-2xl transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 hover:border-primary/50">
                         <img
-                          src={item.image}
+                          src={item.image || DEFAULT_AVATAR}
                           alt={item.title}
                           className="w-16 h-16 rounded-full border-2 border-white dark:border-gray-700 shadow-md object-cover bg-gray-100 dark:bg-gray-800 group-hover:rotate-6 transition-transform duration-300"
                           onError={(e) => {
@@ -271,7 +271,7 @@ export default ({ data }: { data: { [string: string]: { order: number; list: Web
                       <div className="h-full flex items-start p-4 bg-white dark:bg-[#1e293b]/80 backdrop-blur-sm border border-gray-100 dark:border-gray-700/60 rounded-2xl transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-gray-200/50 dark:hover:shadow-black/30 hover:border-primary/40 dark:hover:border-primary/40 group-hover:bg-white/80 dark:group-hover:bg-[#1e293b]">
                         <div className="relative shrink-0">
                           <img
-                            src={item.image}
+                            src={item.image || DEFAULT_AVATAR}
                             alt={item.title}
                             className="w-12 h-12 rounded-xl object-cover bg-gray-100 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 transition-transform duration-300 group-hover:scale-110"
                             onError={(e) => {

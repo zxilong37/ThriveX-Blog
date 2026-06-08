@@ -161,6 +161,7 @@ const ContentMD = ({ data }: Props) => {
   const renderers = {
     img: ({ alt, src }: { alt?: string; src?: string }) => {
       const imgRef = useRef<HTMLImageElement>(null);
+      const imageSrc = src?.trim();
 
       useEffect(() => {
         const img = imgRef.current;
@@ -187,10 +188,12 @@ const ContentMD = ({ data }: Props) => {
         };
       }, []);
 
+      if (!imageSrc) return null;
+
       return (
-        <PhotoView src={src || ''}>
+        <PhotoView src={imageSrc}>
           <span className="flex justify-center my-4 dark:brightness-90">
-            <img ref={imgRef} alt={alt} src={src} className="max-h-[500px]" />
+            <img ref={imgRef} alt={alt} src={imageSrc} className="max-h-[500px]" />
           </span>
         </PhotoView>
       );

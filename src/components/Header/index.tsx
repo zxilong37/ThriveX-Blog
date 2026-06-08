@@ -26,6 +26,7 @@ export default () => {
   const isPathSty = ['/my', '/wall', '/record', '/equipment', '/tags', '/resume', '/album', '/fishpond', '/friend'].some((path) => patchName.includes(path));
   // 是否改变导航样式
   const [isScrolled, setIsScrolled] = useState(false);
+  const logoSrc = isDark ? theme?.dark_logo : isPathSty || isScrolled ? theme?.light_logo : theme?.dark_logo;
 
   // 获取分类列表
   const [cateList, setCateList] = useState<Cate[]>([]);
@@ -77,7 +78,7 @@ export default () => {
 
           {/* logo */}
           <Link href="/" className="flex items-center p-5 text-[15px]  ">
-            {isDark ? <img src={theme?.dark_logo} alt="Logo" className="min-w-32 h-10 pr-5 hover:scale-90 transition-transform" /> : <img src={isPathSty || isScrolled ? theme?.light_logo : theme?.dark_logo} alt="Logo" className="min-w-32 h-10 pr-5 hover:scale-90 transition-transform" />}
+            {logoSrc ? <img src={logoSrc} alt="Logo" className="min-w-32 h-10 pr-5 hover:scale-90 transition-transform" /> : <span className="min-w-32 h-10 pr-5 inline-flex items-center font-semibold tracking-[0.3em] text-white">THRIVE</span>}
           </Link>
 
           <ul className="hidden lg:flex items-center h-16">

@@ -19,6 +19,7 @@ const formatMonth = (ts: string | number | Date | undefined) =>
   ts != null ? MONTH_ZH[dayjs(+ts).month()] : '--';
 const formatTime = (ts: string | number | Date | undefined) =>
   ts != null ? dayjs(+ts).format('HH:mm') : '--';
+const DEFAULT_AVATAR = 'https://q1.qlogo.cn/g?b=qq&nk=2069065992&s=640';
 
 /** 根据与当前时间的差值返回相对时间文案 */
 function getRelativeTimeLabel(ts: string | number | Date | undefined): string {
@@ -46,7 +47,7 @@ function getRelativeTimeLabel(ts: string | number | Date | undefined): string {
 }
 
 export default function RecordCard({ id, content, images, createTime, user }: RecordItemProps) {
-  const imageList: string[] = Array.isArray(images) ? images : JSON.parse((images as string) ?? '[]');
+  const imageList: string[] = (Array.isArray(images) ? images : JSON.parse((images as string) ?? '[]')).filter(Boolean);
 
   return (
     <article key={id} className="relative flex gap-6 pb-12 group">
@@ -69,7 +70,7 @@ export default function RecordCard({ id, content, images, createTime, user }: Re
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-3">
               <img
-                src={user?.avatar}
+                src={user?.avatar || DEFAULT_AVATAR}
                 alt={user?.name ?? '作者头像'}
                 width={40}
                 height={40}

@@ -8,6 +8,8 @@ import ICPBeian from './components/ICPBeian';
 
 import animals from './images/animals.webp';
 
+const DEFAULT_AVATAR = 'https://q1.qlogo.cn/g?b=qq&nk=2069065992&s=640';
+
 export default async () => {
   const { data: user } = await getAuthorDataAPI();
   const webResponse = await getWebConfigDataAPI<{ value: Web }>('web');
@@ -23,7 +25,7 @@ export default async () => {
 
       <div className="bg-white dark:bg-black-b border-t dark:border-black-b px-10  ">
         <div className="flex justify-center items-center py-4">
-          <img src={user?.avatar} alt="作者头像" className="w-20 h-20 rounded-full mr-8 avatar-animation shadow-[5px_11px_30px_20px_rgba(255,255,255,0.1)]" />
+          <img src={user?.avatar || DEFAULT_AVATAR} alt="作者头像" className="w-20 h-20 rounded-full mr-8 avatar-animation shadow-[5px_11px_30px_20px_rgba(255,255,255,0.1)]" />
           <h2 className="w-[90%] xl:w-3/6 text-sm sm:text-base dark:text-[#8c9ab1] line-clamp-4">{web?.footer}</h2>
         </div>
 

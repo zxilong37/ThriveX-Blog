@@ -30,8 +30,8 @@ export default ({ data }: { data: Project[] }) => {
                         <h3 className="text-[18px] mb-4">作品预览：</h3>
                         <div className="grid grid-cols-2 gap-2 p-2.5 border dark:border-[#444e5d] rounded-xl  ">
                           <PhotoProvider>
-                            {item.images?.map((img, index) => (
-                              <PhotoView key={index} src={img || ''}>
+                            {item.images?.filter((img) => img?.trim()).map((img, index) => (
+                              <PhotoView key={index} src={img}>
                                 <img src={img} alt="作品图片" className="border dark:border-[#444e5d] dark hover:scale-[1.2] rounded-lg cursor-pointer transition-transform" />
                               </PhotoView>
                             ))}
