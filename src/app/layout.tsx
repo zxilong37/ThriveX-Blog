@@ -115,7 +115,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <BaiduStatis />
       </head>
 
-      <body id="root" className="dark:!bg-black-a">
+      <body id="root" className="dark:!bg-black-a" suppressHydrationWarning>
         <RouteChangeHandler />
         <InjectData />
         {/* <Confetti /> */}
