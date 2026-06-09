@@ -3,7 +3,7 @@ import { Cate } from '@/types/app/cate';
 import Link from 'next/link';
 import { IoIosArrowDown } from 'react-icons/io';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiLogIn, FiLogOut, FiPenTool } from 'react-icons/fi';
+import { FiLogIn, FiLogOut, FiPenTool, FiZap } from 'react-icons/fi';
 
 interface Props {
   list: Cate[];
@@ -12,6 +12,12 @@ interface Props {
   isLoggedIn?: boolean;
   onLogout?: () => void;
 }
+
+const isHotspotUrl = (url?: string) => {
+  if (!url) return false;
+  const normalized = url.trim().replace(/^https?:\/\/[^/]+/i, '').split(/[?#]/)[0].replace(/\/+$/, '');
+  return normalized === '/hotspot';
+};
 
 export default ({ list, open, onClose, isLoggedIn, onLogout }: Props) => {
   return (
@@ -24,6 +30,11 @@ export default ({ list, open, onClose, isLoggedIn, onLogout }: Props) => {
                 <li>
                   <Link href="/publish" className="mb-2 flex items-center gap-3 rounded-[8px] bg-[#1e3a2f] p-3 px-5 text-[15px] font-bold text-white" onClick={onClose}>
                     <FiPenTool /> 发布文章
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/hotspot" className="mb-2 flex items-center gap-3 rounded-[8px] bg-[#0f62d6] p-3 px-5 text-[15px] font-bold text-white shadow-[0_12px_28px_rgba(15,98,214,0.2)]" onClick={onClose}>
+                    <FiZap /> 实时热点
                   </Link>
                 </li>
                 <li>
@@ -44,7 +55,7 @@ export default ({ list, open, onClose, isLoggedIn, onLogout }: Props) => {
                     </Link>
                   )}
                 </li>
-                {list?.map((one) => (
+                {list?.filter((one) => !isHotspotUrl(one.url))?.map((one) => (
                   <div key={one.id}>
                     {one.type === 'cate' && (
                       <li className="group/one relative hover:bg-[#e0e6ec] dark:hover:bg-[#495362] rounded-md  ">

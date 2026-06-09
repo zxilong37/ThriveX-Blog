@@ -11,7 +11,7 @@ import SidebarNav from './components/SidebarNav';
 import { IoIosArrowDown } from 'react-icons/io';
 import { FaRegSun } from 'react-icons/fa';
 import { BsFillMoonStarsFill, BsTextIndentLeft } from 'react-icons/bs';
-import { FiLogIn, FiLogOut, FiPenTool } from 'react-icons/fi';
+import { FiLogIn, FiLogOut, FiPenTool, FiZap } from 'react-icons/fi';
 
 import { Cate } from '@/types/app/cate';
 import { getCateListAPI } from '@/api/cate';
@@ -21,13 +21,19 @@ import { useConfigStore } from '@/stores';
 const authTokenKey = 'thrivex_blog_token';
 const authUserKey = 'thrivex_blog_user';
 const authChangedEvent = 'thrivex-auth-changed';
+const isRouteMatch = (pathname: string, path: string) => pathname === path || pathname.startsWith(`${path}/`);
+const isHotspotUrl = (url?: string) => {
+  if (!url) return false;
+  const normalized = url.trim().replace(/^https?:\/\/[^/]+/i, '').split(/[?#]/)[0].replace(/\/+$/, '');
+  return normalized === '/hotspot';
+};
 
 export default function Header() {
   const pathname = usePathname();
   const { isDark, setIsDark, theme } = useConfigStore();
 
-  const stableStylePaths = ['/my', '/wall', '/record', '/equipment', '/tags', '/resume', '/album', '/fishpond', '/friend', '/publish', '/reports'];
-  const usesStableHeader = stableStylePaths.some((path) => pathname.includes(path));
+  const stableStylePaths = ['/my', '/wall', '/record', '/equipment', '/tags', '/resume', '/album', '/fishpond', '/friend', '/publish', '/reports', '/hotspot'];
+  const usesStableHeader = stableStylePaths.some((path) => isRouteMatch(pathname, path));
   const [isScrolled, setIsScrolled] = useState(false);
   const [cateList, setCateList] = useState<Cate[]>([]);
   const [isOpenSidebarNav, setIsOpenSidebarNav] = useState(false);
@@ -109,7 +115,14 @@ export default function Header() {
               </Link>
             </li>
 
-            {cateList?.map((one) => (
+            <li className="group/one relative">
+              <Link href="/hotspot" className={`flex items-center gap-1.5 rounded-[6px] px-4 py-2 text-[14px] font-black transition group-hover/one:!text-primary ${pathname === '/hotspot' ? 'bg-[#0f62d6] text-white shadow-[0_12px_28px_rgba(15,98,214,0.22)] dark:bg-sky-500 dark:text-[#102033]' : 'bg-[#e8f3ff] text-[#15518d] hover:bg-[#d9ebff] dark:bg-sky-500/14 dark:text-sky-100 dark:hover:bg-sky-500/22'}`}>
+                <FiZap />
+                实时热点
+              </Link>
+            </li>
+
+            {cateList?.filter((one) => !isHotspotUrl(one.url))?.map((one) => (
               <li key={one.id} className="group/one relative">
                 <Link href={one.type === 'cate' ? `/cate/${one.id}?name=${one.name}` : one.url} target={`${one.url.startsWith('http') ? '_blank' : '_self'}`} className="flex items-center rounded-[6px] px-4 py-2 text-[14px] font-semibold transition hover:bg-white/55 group-hover/one:!text-primary dark:hover:bg-white/10">
                   <span className="mr-1.5">{one.icon}</span>
