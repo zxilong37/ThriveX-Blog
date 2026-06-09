@@ -23,26 +23,21 @@ const authUserKey = 'thrivex_blog_user';
 const authChangedEvent = 'thrivex-auth-changed';
 
 export default function Header() {
-  const patchName = usePathname();
+  const pathname = usePathname();
   const { isDark, setIsDark, theme } = useConfigStore();
 
   const stableStylePaths = ['/my', '/wall', '/record', '/equipment', '/tags', '/resume', '/album', '/fishpond', '/friend', '/publish', '/reports'];
-  const isPathSty = stableStylePaths.some((path) => patchName.includes(path));
+  const usesStableHeader = stableStylePaths.some((path) => pathname.includes(path));
   const [isScrolled, setIsScrolled] = useState(false);
   const [cateList, setCateList] = useState<Cate[]>([]);
   const [isOpenSidebarNav, setIsOpenSidebarNav] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [authName, setAuthName] = useState('');
-  const logoSrc = isDark ? theme?.dark_logo : isPathSty || isScrolled ? theme?.light_logo : theme?.dark_logo;
-
-  const getCateList = async () => {
-    const { data } = await getCateListAPI();
-    setCateList(data?.result ?? []);
-  };
+  const logoSrc = isDark ? theme?.dark_logo : usesStableHeader || isScrolled ? theme?.light_logo : theme?.dark_logo;
 
   useEffect(() => {
     const mediaQuery = matchMedia('(prefers-color-scheme: dark)');
-    const handleThemeChange = (e: MediaQueryListEvent) => setIsDark(e.matches);
+    const handleThemeChange = (event: MediaQueryListEvent) => setIsDark(event.matches);
     const handleScroll = () => setIsScrolled(window.scrollY > 100);
     const syncAuth = () => {
       const token = localStorage.getItem(authTokenKey);
@@ -60,12 +55,16 @@ export default function Header() {
         setAuthName('');
       }
     };
+    const loadCateList = async () => {
+      const { data } = await getCateListAPI();
+      setCateList(data?.result ?? []);
+    };
 
     mediaQuery.addEventListener('change', handleThemeChange);
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('storage', syncAuth);
     window.addEventListener(authChangedEvent, syncAuth);
-    getCateList();
+    loadCateList();
     syncAuth();
     handleScroll();
 
@@ -75,7 +74,7 @@ export default function Header() {
       window.removeEventListener('storage', syncAuth);
       window.removeEventListener(authChangedEvent, syncAuth);
     };
-  }, []);
+  }, [setIsDark]);
 
   useEffect(() => {
     document.querySelector('html')?.classList?.toggle('dark', isDark);
@@ -89,7 +88,7 @@ export default function Header() {
     window.dispatchEvent(new Event(authChangedEvent));
   };
 
-  const headerTone = isPathSty || isScrolled ? 'border-white/70 bg-white/85 text-[#222a31] backdrop-blur-xl dark:border-slate-800/80 dark:bg-[#141a22]/90 dark:text-white' : 'border-white/20 bg-black/18 text-white backdrop-blur-md';
+  const headerTone = usesStableHeader || isScrolled ? 'border-white/70 bg-white/85 text-[#222a31] backdrop-blur-xl dark:border-slate-800/80 dark:bg-[#141a22]/90 dark:text-white' : 'border-white/20 bg-black/18 text-white backdrop-blur-md';
 
   return (
     <>
@@ -99,13 +98,13 @@ export default function Header() {
             <BsTextIndentLeft className="text-[24px]" />
           </button>
 
-          <Link href="/" className="mr-3 flex min-w-[128px] items-center gap-2 rounded-[6px] px-3 py-2 text-[15px]">
-            {logoSrc ? <img src={logoSrc} alt="Logo" className="h-8 max-w-32 object-contain transition-transform hover:scale-95" /> : <span className="inline-flex items-center font-semibold tracking-[0.3em]">THRIVE</span>}
+          <Link href="/" className="mr-3 flex min-w-[128px] items-center gap-2 rounded-[6px] px-3 py-2 text-[15px]" aria-label="回到首页">
+            {logoSrc ? <img src={logoSrc} alt="ThriveX Logo" className="h-8 max-w-32 object-contain transition-transform hover:scale-95" /> : <span className="inline-flex items-center font-semibold tracking-[0.3em]">THRIVE</span>}
           </Link>
 
           <ul className="hidden flex-1 items-center gap-1 lg:flex">
             <li className="group/one relative">
-              <Link href="/" className={`flex items-center rounded-[6px] px-4 py-2 text-[14px] font-semibold transition group-hover/one:!text-primary ${patchName === '/' ? 'bg-white text-[#1d2a32] shadow-sm dark:bg-slate-800 dark:text-white' : 'hover:bg-white/55 dark:hover:bg-white/10'}`}>
+              <Link href="/" className={`flex items-center rounded-[6px] px-4 py-2 text-[14px] font-semibold transition group-hover/one:!text-primary ${pathname === '/' ? 'bg-white text-[#1d2a32] shadow-sm dark:bg-slate-800 dark:text-white' : 'hover:bg-white/55 dark:hover:bg-white/10'}`}>
                 首页
               </Link>
             </li>
@@ -136,7 +135,7 @@ export default function Header() {
           </ul>
 
           <div className="ml-auto hidden items-center gap-2 lg:flex">
-            <Link href="/publish" className={`inline-flex items-center gap-2 rounded-[6px] px-4 py-2 text-sm font-black transition ${patchName === '/publish' ? 'bg-[#17231d] text-white dark:bg-white dark:text-slate-950' : 'bg-[#edf6ef] text-[#173327] hover:bg-[#dbeee0] dark:bg-emerald-950/40 dark:text-emerald-100 dark:hover:bg-emerald-900/50'}`}>
+            <Link href="/publish" className={`inline-flex items-center gap-2 rounded-[6px] px-4 py-2 text-sm font-black transition ${pathname === '/publish' ? 'bg-[#17231d] text-white dark:bg-white dark:text-slate-950' : 'bg-[#edf6ef] text-[#173327] hover:bg-[#dbeee0] dark:bg-emerald-950/40 dark:text-emerald-100 dark:hover:bg-emerald-900/50'}`}>
               <FiPenTool /> 发布文章
             </Link>
 

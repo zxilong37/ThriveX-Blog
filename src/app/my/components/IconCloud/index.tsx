@@ -53,14 +53,55 @@ export const renderCustomIcon = (icon: SimpleIcon, theme: string) => {
 
 type IconData = Awaited<ReturnType<typeof fetchSimpleIcons>>;
 
+const iconSlugAliases: Record<string, string | null> = {
+  scss: 'sass',
+  html: 'html5',
+  fetch: null,
+  vue: 'vuedotjs',
+  vuex: null,
+  zustand: null,
+  'element-plus': 'element',
+  motion: 'framer',
+  pinia: null,
+  'framer-motion': 'framer',
+  echarts: 'apacheecharts',
+  java: 'openjdk',
+  mybatis: null,
+  'mybatis-plus': null,
+  nextjs: 'nextdotjs',
+  visualstudiocode: null,
+  trae: null,
+  cursor: null,
+  navicat: null,
+  hbuilder: null,
+  hbuilderx: null,
+  windows: null,
+};
+
+const normalizeIconSlugs = (slugs: string[]) => {
+  const normalized = slugs
+    .map((slug) => slug.trim().toLowerCase())
+    .filter(Boolean)
+    .map((slug) => (Object.prototype.hasOwnProperty.call(iconSlugAliases, slug) ? iconSlugAliases[slug] : slug))
+    .filter((slug): slug is string => Boolean(slug));
+
+  return Array.from(new Set(normalized));
+};
+
 export default function IconCloud({ iconSlugs }: { iconSlugs: string[] }) {
   const [data, setData] = useState<IconData | null>(null);
   const [mounted, setMounted] = useState(false);
+  const normalizedSlugs = useMemo(() => normalizeIconSlugs(iconSlugs), [iconSlugs]);
 
   useEffect(() => {
     setMounted(true);
-    fetchSimpleIcons({ slugs: iconSlugs }).then(setData);
-  }, [iconSlugs]);
+    if (!normalizedSlugs.length) {
+      setData(null);
+      return;
+    }
+
+    fetchSimpleIcons({ slugs: normalizedSlugs }).then(setData);
+  }, [normalizedSlugs]);
 
   const renderedIcons = useMemo(() => {
     if (!data) return null;

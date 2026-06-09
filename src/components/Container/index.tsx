@@ -2,10 +2,10 @@ import './index.scss';
 
 export default ({ children }: { children: React.ReactNode }) => {
   return (
-    <>
-      <div className="ContainerComponent">
-        <div className="flex flex-wrap justify-between lg:w-[950px] xl:w-[1200px] p-5 mx-auto">{children}</div>
+    <div className="ContainerComponent relative">
+      <div className="mx-auto flex w-full max-w-[1240px] flex-wrap justify-between gap-y-4 px-4 py-4 sm:px-6 lg:px-5 lg:py-5 xl:px-0">
+        {children}
       </div>
-    </>
+    </div>
   );
 };

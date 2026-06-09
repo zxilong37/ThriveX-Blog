@@ -6,7 +6,13 @@ html.dark {
 }
 
 body {
-    background-color: #f9f9f9;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 18% 12%, rgba(96, 165, 250, 0.26), transparent 28%),
+        radial-gradient(circle at 82% 2%, rgba(14, 165, 233, 0.18), transparent 30%),
+        linear-gradient(180deg, #eaf6ff 0%, #dbeeff 42%, #f4fbff 100%);
+    background-attachment: fixed;
+    color: #1d3246;
     font-weight: normal;
 
     // 霞鹜文楷
@@ -19,6 +25,34 @@ body {
     // font-family:'Yozai Medium';
 }
 
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(37, 99, 235, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14, 165, 233, 0.065) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent 82%);
+}
+
+html.dark body {
+    background:
+        radial-gradient(circle at 16% 10%, rgba(59, 130, 246, 0.28), transparent 30%),
+        radial-gradient(circle at 78% 0%, rgba(14, 165, 233, 0.22), transparent 34%),
+        linear-gradient(180deg, #082f49 0%, #0b4a73 48%, #123f63 100%);
+    color: #e8f4ff;
+}
+
+html.dark body::before {
+    background-image:
+        linear-gradient(rgba(186, 230, 253, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(125, 211, 252, 0.09) 1px, transparent 1px);
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent 76%);
+}
+
 /* 滚动条槽 */
 // ::-webkit-scrollbar-track {
 //     background: #f1f1f1;
@@ -27,11 +61,11 @@ body {
 
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #539dfd, #86b5f2);
+    background: linear-gradient(to bottom, #1f6f78, #d89b38);
     height: 50px;
     outline-offset: -2px;
     outline: 2px solid #ffffff00;
-    -webkit-border-radius: 4px;
+    -webkit-border-radius: 8px;
     border: 2px solid #ffffff00;
 }
 
@@ -42,13 +76,15 @@ body {
 }
 
 ::-webkit-scrollbar {
-    width: 0;
-    height: 0;
+    width: 8px;
+    height: 8px;
 }
 
 // 文字阴影
 .custom_text_shadow {
-    text-shadow: 0 0.1875rem 0.3125rem #1c1f21;
+    text-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.72),
+        0 10px 28px rgba(0, 0, 0, 0.38);
 }
 
 // 头像动画效果

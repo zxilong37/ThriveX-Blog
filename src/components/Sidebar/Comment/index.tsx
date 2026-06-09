@@ -1,14 +1,10 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getCommentPagingAPI } from '@/api/comment';
-import NewCommentSvg from '@/assets/svg/other/comments.svg';
 import RandomAvatar from '@/components/RandomAvatar';
 import { Comment } from '@/types/app/comment';
-import dayjs from 'dayjs';
-import { RiTimeLine } from 'react-icons/ri';
 
 const NewComments = () => {
   const [list, setList] = useState<Comment[]>([]);
@@ -22,31 +18,19 @@ const NewComments = () => {
     getCommentPaging();
   }, []);
 
+  const item = list[0];
+  if (!item) return null;
+
   return (
-    <div className="flex flex-col tw_container bg-white dark:bg-black-b p-4 mb-3 tw_title">
-      <div className="tw_title w-full dark:text-white">
-        <Image src={NewCommentSvg} alt="最新评论" width={33} height={23} /> 最新评论
+    <Link href={`/article/${item.articleId}`} target="_blank" className="group flex min-h-[96px] items-center gap-3 rounded-[8px] border border-gray-100 bg-white p-3 shadow-[0_10px_28px_rgba(15,23,42,0.06)] transition hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-[0_18px_46px_rgba(15,23,42,0.12)] dark:border-neutral-700 dark:bg-[#1f1f1f] dark:hover:border-neutral-600">
+      <div className="size-[64px] shrink-0 overflow-hidden rounded-[7px] border border-gray-100 bg-gray-50 dark:border-neutral-700 dark:bg-[#2a2a2a]">
+        {item.avatar ? <img src={item.avatar} className="size-full object-cover transition duration-500 group-hover:scale-105" alt="评论头像" /> : <RandomAvatar className="size-full transition duration-500 group-hover:scale-105" />}
       </div>
-
-      <div className="flex flex-col gap-1 mt-3 w-full">
-        {list.map((item) => (
-          <Link href={`/article/${item.articleId}`} target="_blank" key={item.id} className="group flex gap-3.5 p-2 -mx-2 rounded-xl hover:bg-slate-50 dark:hover:bg-transparent cursor-pointer">
-            <div className="relative flex-shrink-0 w-11 h-11 mt-0.5">{item.avatar ? <img src={item.avatar} className="w-full h-full object-cover rounded-full transition-transform duration-300 group-hover:scale-110 ring-2 ring-transparent group-hover:ring-blue-100 dark:group-hover:ring-blue-900/30" alt="avatar" /> : <RandomAvatar className="w-full h-full rounded-full transition-transform duration-300 group-hover:scale-110 ring-2 ring-transparent group-hover:ring-blue-100 dark:group-hover:ring-blue-900/30" />}</div>
-
-            <div className="flex flex-col flex-1 min-w-0 justify-center">
-              <p className="text-[14px] text-slate-600 dark:text-[#8c9ab1] group-hover:text-primary line-clamp-2 leading-relaxed break-words">{item.content}</p>
-
-              <div className="flex items-center gap-1 mt-1.5 text-[12px] text-slate-400 dark:text-zinc-500 font-medium">
-                <RiTimeLine className="text-[14px]" />
-                <time className="dark:text-gray-500" dateTime={dayjs(+item.createTime!).toISOString()}>
-                  {dayjs(+item.createTime!).format('YYYY-MM-DD HH:mm')}
-                </time>
-              </div>
-            </div>
-          </Link>
-        ))}
+      <div className="min-w-0 flex-1">
+        <div className="mb-1 text-[12px] font-black tracking-[0.16em] text-[#1f6f78] dark:text-[#5fd0c0]">最新评论</div>
+        <h3 className="text-[15px] font-black leading-6 text-slate-800 line-clamp-2 group-hover:text-[#1f6f78] dark:text-slate-100 dark:group-hover:text-[#d9f2ed]">{item.content}</h3>
       </div>
-    </div>
+    </Link>
   );
 };
 

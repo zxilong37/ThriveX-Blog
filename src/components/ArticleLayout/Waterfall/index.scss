@@ -14,3 +14,11 @@
     /* gutter size */
     background-clip: padding-box;
 }
+
+.article-waterfall {
+    margin-left: -16px;
+}
+
+.article-waterfall .masonry-grid_column {
+    padding-left: 16px;
+}

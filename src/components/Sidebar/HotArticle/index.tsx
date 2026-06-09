@@ -1,45 +1,29 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { getWebConfigDataAPI } from '@/api/config';
 import { getArticleListAPI } from '@/api/article';
-import { IoIosArrowForward } from 'react-icons/io';
-import FireSvg from '@/assets/svg/other/fire.svg';
 import { Theme } from '@/types/app/config';
 import { Article } from '@/types/app/article';
 
-const RandomArticle = async () => {
+const HotArticle = async () => {
   const themeResponse = await getWebConfigDataAPI<{ value: Theme }>('theme');
   const theme = themeResponse?.data?.value as Theme;
   const { data: article } = await getArticleListAPI();
   const ids = theme.reco_article.map((item) => Number(item)) ?? [];
-  const list = article?.result.filter((item: Article) => ids.includes(item.id as number)) ?? [];
+  const item = article?.result.find((articleItem: Article) => ids.includes(articleItem.id as number));
+
+  if (!item) return null;
 
   return (
-    <div className="hotArticleComponent">
-      <div className="flex flex-col tw_container bg-white dark:bg-black-b p-4 mb-3 tw_title">
-        <div className="tw_title w-full dark:text-white">
-          <Image src={FireSvg} alt="作者推荐" width={30} height={20} />
-          <span> 作者推荐</span>
-        </div>
-
-        <div className="flex flex-col px-3 py-2 w-full">
-          {list?.map((item: Article) => (
-            <div key={item.id} className="border-b border-dashed border-gray-100 dark:border-white/10 last:border-none">
-              <Link
-                href={`/article/${item.id}`}
-                target="_blank"
-                className="group flex items-center justify-between py-3.5 w-full"
-              >
-                <span className="text-sm font-medium text-gray-600 dark:text-[#8c9ab1] group-hover:text-primary dark:group-hover:text-primary line-clamp-1 pr-4">{item.title}</span>
-
-                <IoIosArrowForward className="text-gray-300 dark:text-gray-600 group-hover:text-primary dark:group-hover:text-primary shrink-0 text-base transform group-hover:translate-x-1 transition-transform duration-200" />
-              </Link>
-            </div>
-          ))}
-        </div>
+    <Link href={`/article/${item.id}`} target="_blank" className="group flex min-h-[96px] items-center gap-3 rounded-[8px] border border-gray-100 bg-white p-3 shadow-[0_10px_28px_rgba(15,23,42,0.06)] transition hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-[0_18px_46px_rgba(15,23,42,0.12)] dark:border-neutral-700 dark:bg-[#1f1f1f] dark:hover:border-neutral-600">
+      <div className="h-[72px] w-[92px] shrink-0 overflow-hidden rounded-[7px] bg-gray-100 dark:bg-[#2a2a2a]">
+        {item.cover ? <img src={item.cover} alt={item.title} className="size-full object-cover transition duration-500 group-hover:scale-105" /> : null}
       </div>
-    </div>
+      <div className="min-w-0 flex-1">
+        <div className="mb-1 text-[12px] font-black tracking-[0.16em] text-[#c05a3f]">作者推荐</div>
+        <h3 className="text-[15px] font-black leading-6 text-slate-800 line-clamp-2 group-hover:text-[#1f6f78] dark:text-slate-100 dark:group-hover:text-[#d9f2ed]">{item.title}</h3>
+      </div>
+    </Link>
   );
 };
 
-export default RandomArticle;
+export default HotArticle;

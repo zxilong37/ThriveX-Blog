@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 .tw_container {
-    @apply border dark:border-transparent rounded-xl transition-shadow ease-in-out hover:shadow-[0_10px_20px_1px_rgb(83,157,253,.1)];
+    @apply rounded-[8px] border border-white/75 bg-white/85 shadow-[0_18px_60px_rgba(28,42,36,0.08)] backdrop-blur-xl transition-[border-color,box-shadow,transform,background-color] ease-out hover:-translate-y-0.5 hover:border-[#b8d9d1] hover:shadow-[0_24px_80px_rgba(31,111,120,0.16)] dark:border-white/10 dark:bg-[#111a1f]/90 dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)] dark:hover:border-[#2d9c97]/50;
 }
 
 .tw_title {
-    @apply flex justify-center items-center pb-4 border-b dark:border-black-a text-[17px] font-normal text-[#333] [&>img]:w-[30px] [&>img]:h-5;
+    @apply flex items-center justify-center border-b border-[#dfe9e4] pb-4 text-[15px] font-black uppercase tracking-[0.14em] text-[#1f3b30] dark:border-white/10 dark:text-[#d9f2ed] [&>img]:h-5 [&>img]:w-[30px];
 }
 
 .tw_form {
-    @apply border rounded-md box-border dark:border-black-b dark:bg-black-b hover:!border-primary outline-none transition-shadow ease-in-out;
+    @apply box-border rounded-[8px] border border-[#dfe9e4] bg-white/90 outline-none transition-[border-color,box-shadow,background-color] ease-out hover:!border-[#1f6f78] dark:border-white/10 dark:bg-[#111a1f]/90;
 
     &:focus {
-        @apply border-2 border-primary shadow-[0_10px_20px_1px_rgb(83,157,253,.1)];
+        @apply border-2 border-[#1f6f78] shadow-[0_0_0_4px_rgba(31,111,120,0.12)];
     }
 }

@@ -1,26 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { getRandomArticleListAPI } from '@/api/article';
 import { useConfigStore } from '@/stores';
 import { Article } from '@/types/app/article';
 import { getRandom } from '@/utils';
-import RandomArticleSvg from '@/assets/svg/other/article.svg';
 
-const RANKING_COLORS = [
-  'bg-[#f83356] after:border-l-[#f83356]',
-  'bg-[#faa527] after:border-l-[#faa527]',
-  'bg-[#3c83fd] after:border-l-[#3c83fd]',
-  'bg-[#56c357] after:border-l-[#56c357]',
-  'bg-[#6756c3] after:border-l-[#6756c3]',
-] as const;
-
-const HotArticle = () => {
+const RandomArticle = () => {
   const { theme } = useConfigStore();
   const covers = theme.covers ?? [];
-
   const [list, setList] = useState<Article[]>([]);
 
   const getRandomArticleList = async () => {
@@ -32,33 +21,21 @@ const HotArticle = () => {
     getRandomArticleList();
   }, []);
 
+  const item = list?.[0];
+  if (!item) return null;
+
   return (
-    <div className="flex flex-col p-4 mb-5 bg-white dark:bg-black-b tw_container tw_title">
-      <h3 className="w-full tw_title dark:text-white">
-        <Image src={RandomArticleSvg} alt="随机推荐" /> 随机推荐
-      </h3>
-
-      <div className="w-full pt-2.5 mt-2 min-h-[120px] space-y-4">
-        {list?.map((item, index) => (
-          <div
-            key={index}
-            className="relative h-32 bg-no-repeat bg-center rounded-md bg-[length:100%] hover:bg-[length:105%] transition-[background-size] duration-300 ease-out after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-12 after:transition-opacity after:rounded-md after:bg-[linear-gradient(transparent,#000)]"
-            style={{ backgroundImage: `url(${item.cover ?? covers[getRandom(0, covers.length - 1)]})` }}
-          >
-            <Link href={`/article/${item.id}`} target="_blank" className="inline-block w-full h-full">
-              <h4 className="absolute bottom-2.5 w-[95%] px-2.5 text-white text-[15px] font-normal line-clamp-1 z-10">{item.title}</h4>
-            </Link>
-
-            <span
-              className={`absolute top-2.5 -left-4 w-[30px] h-[25px] pl-[7px] flex items-center text-white rounded-tr-full rounded-br-full font-black box-border after:content-[''] after:absolute after:-bottom-[5px] after:left-0 after:w-0 after:h-0 after:border-[5px] after:border-solid after:border-t-transparent after:border-r-transparent after:border-b-transparent ${RANKING_COLORS[Math.min(index, 4)]}`}
-            >
-              {index + 1}
-            </span>
-          </div>
-        ))}
+    <Link href={`/article/${item.id}`} target="_blank" className="group flex min-h-[96px] items-center gap-3 rounded-[8px] border border-gray-100 bg-white p-3 shadow-[0_10px_28px_rgba(15,23,42,0.06)] transition hover:-translate-y-0.5 hover:border-gray-200 hover:shadow-[0_18px_46px_rgba(15,23,42,0.12)] dark:border-neutral-700 dark:bg-[#1f1f1f] dark:hover:border-neutral-600">
+      <div
+        className="h-[72px] w-[92px] shrink-0 rounded-[7px] bg-gray-100 bg-cover bg-center dark:bg-[#2a2a2a]"
+        style={{ backgroundImage: item.cover || covers.length ? `url(${item.cover || covers[getRandom(0, covers.length - 1)]})` : undefined }}
+      />
+      <div className="min-w-0 flex-1">
+        <div className="mb-1 text-[12px] font-black tracking-[0.16em] text-[#d89b38]">随机推荐</div>
+        <h3 className="text-[15px] font-black leading-6 text-slate-800 line-clamp-2 group-hover:text-[#1f6f78] dark:text-slate-100 dark:group-hover:text-[#d9f2ed]">{item.title}</h3>
       </div>
-    </div>
+    </Link>
   );
 };
 
-export default HotArticle;
+export default RandomArticle;

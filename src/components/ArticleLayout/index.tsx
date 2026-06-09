@@ -4,6 +4,7 @@ import Classics from './Classics';
 import Waterfall from './Waterfall';
 import Card from './Card';
 import Pagination from '../Pagination';
+import Highlights from './components/Highlights';
 
 import { getArticlePagingAPI } from '@/api/article';
 import { getWebConfigDataAPI } from '@/api/config';
@@ -15,25 +16,25 @@ export default async ({ page }: { page: number }) => {
   const themeResponse = await getWebConfigDataAPI<{ value: Theme }>('theme');
   const theme = themeResponse?.data?.value as Theme;
   const sidebar = theme?.right_sidebar ?? [];
-
-  // 如果是瀑布流布局就显示28条数据，否则显示8条
+  const infoSidebar = sidebar.filter((item) => ['author', 'study'].includes(item));
   const { data } = await getArticlePagingAPI({
     page,
-    size: theme.is_article_layout === 'waterfall' ? 28 : 8
+    size: theme.is_article_layout === 'waterfall' ? 28 : 8,
   });
-  // 过滤掉不显示在首页的文章
+
   data.result = data?.result?.filter((item) => item.config.status !== 'no_home') ?? [];
 
   return (
-    <div className={`w-full md:w-[90%] ${sidebar?.length ? 'lg:w-[68%] xl:w-[73%]' : 'w-full'} mx-auto transition-width`}>
+    <div className={`mx-auto w-full md:w-[92%] ${infoSidebar.length ? 'lg:w-[68%] xl:w-[73%]' : 'w-full'} transition-width`}>
       {!!swiper?.length && <Swiper data={swiper} />}
-      <Dynamic className="my-2" />
+      <Highlights sidebar={sidebar} />
+      <Dynamic className="my-4" />
 
       {theme.is_article_layout === 'classics' && <Classics data={data} />}
       {theme.is_article_layout === 'card' && <Card data={data} />}
       {theme.is_article_layout === 'waterfall' && <Waterfall data={data} />}
 
-      {!!data.total && <Pagination total={data?.pages} page={page} className="flex justify-center mt-5" />}
+      {!!data.total && <Pagination total={data?.pages} page={page} className="mt-5 flex justify-center" />}
     </div>
   );
 };

@@ -31,32 +31,37 @@ const Card = async ({ data }: CardProps) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {data?.result?.map((item) => (
-        <div key={item.id} className="relative overflow-hidden flex h-[190px] md:h-60 lg:h-52 xl:h-60 bg-black-b tw_container">
-          <div className="relative w-full py-5 px-5 sm:px-10 lg:px-5 xl:px-10 z-20">
-            <Link href={`/article/${item.id}`} className="flex flex-col justify-between h-full text-center sm:text-start">
-              <h3 className="overflow-hidden relative w-full my-2.5 text_shadow text-white hover:text-primary text-center text-lg md:text-xl lg:text-[22px] xl:text-2xl   line-clamp-1">{item.title}</h3>
-              <p className="text-center text-[#cecece] text-sm sm:text-[15px] leading-7 sm:indent-8 line-clamp-2 xl:line-clamp-3">{genArticleInfo(item)}</p>
+        <article key={item.id} className="group relative flex min-h-[200px] overflow-hidden tw_container md:h-[210px] lg:h-[200px] xl:h-[220px]">
+          <div className="relative z-20 w-full px-5 py-5 sm:px-8 lg:px-7 xl:px-9">
+            <Link href={`/article/${item.id}`} className="flex h-full flex-col justify-between text-center">
+              <div>
+                <span className="mb-3 inline-flex items-center rounded-[6px] bg-white/15 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-[#d9f2ed] ring-1 ring-white/15">
+                  Article
+                </span>
+                <h3 className="relative mx-auto my-2 max-w-[720px] overflow-hidden text_shadow text-xl font-black leading-tight text-white line-clamp-2 transition-colors group-hover:text-[#d9f2ed] md:text-[22px] xl:text-2xl">{item.title}</h3>
+              </div>
+              <p className="mx-auto max-w-[760px] text-center text-sm leading-7 text-[#d7e2de] line-clamp-3 sm:text-[15px]">{genArticleInfo(item)}</p>
 
-              <div className={`flex justify-center pt-5 text-end space-x-4 sm:space-x-8`}>
-                <div className="flex items-center text-xs text-white">
+              <div className="flex flex-wrap justify-center gap-3 pt-3 text-end">
+                <div className="flex items-center rounded-full bg-white/10 px-3 py-1.5 text-xs text-white ring-1 ring-white/10">
                   <span className="pr-1">
-                    <IoTimeOutline className="p-1 mt-[-2px] mr-[3px] text-[23px] text-white rounded-full align-middle bg-[#539dfd]" />
+                    <IoTimeOutline className="mr-[3px] mt-[-2px] rounded-full bg-[#1f6f78] p-1 text-[22px] text-white align-middle" />
                   </span>
                   <span>{dayjs(+item.createTime!).format('YYYY-MM-DD')}</span>
                 </div>
 
-                <div className="flex items-center text-xs text-white">
+                <div className="flex items-center rounded-full bg-white/10 px-3 py-1.5 text-xs text-white ring-1 ring-white/10">
                   <span className="pr-1">
-                    <RiFireLine className="p-1 mt-[-2px] mr-[3px] text-[23px] text-white rounded-full align-middle bg-[#eb373a]" />
+                    <RiFireLine className="mr-[3px] mt-[-2px] rounded-full bg-[#c05a3f] p-1 text-[22px] text-white align-middle" />
                   </span>
                   <span>{item.view}</span>
                 </div>
 
-                <div className="flex items-center text-xs text-white">
+                <div className="flex items-center rounded-full bg-white/10 px-3 py-1.5 text-xs text-white ring-1 ring-white/10">
                   <span className="pr-1">
-                    <GoTag className="p-1 mt-[-2px] mr-[3px] text-[23px] text-white rounded-full align-middle bg-[#f5a630]" />
+                    <GoTag className="mr-[3px] mt-[-2px] rounded-full bg-[#d89b38] p-1 text-[22px] text-white align-middle" />
                   </span>
                   <span>{item.cateList[0]?.name}</span>
                 </div>
@@ -65,13 +70,15 @@ const Card = async ({ data }: CardProps) => {
           </div>
 
           <div
-            className="absolute w-full h-60 bg-cover bg-center"
+            className="absolute inset-0 bg-cover bg-center"
             style={{
-              filter: 'blur(1.8rem) brightness(0.9)',
-              backgroundImage: `url(${item.cover ?? covers[getRandom(0, covers.length - 1)]})`,
+              filter: 'blur(2rem) brightness(0.52) saturate(1.08)',
+              transform: 'scale(1.12)',
+              backgroundImage: item.cover || covers.length ? `url(${item.cover || covers[getRandom(0, covers.length - 1)]})` : undefined,
             }}
           />
-        </div>
+          <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(10,24,26,0.72),rgba(33,64,48,0.5),rgba(7,11,14,0.72))]" />
+        </article>
       ))}
 
       <Show is={!data?.total}>

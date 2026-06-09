@@ -21,53 +21,51 @@ const Author = async () => {
   const theme = themeResponse?.data?.value as Theme;
 
   const socialList = theme?.social ?? [];
-
-  // 图标列表
   const images: { [string: string]: string } = {
-    CSDN: CSDN,
-    Douyin: Douyin,
-    GitHub: GitHub,
-    Gitee: Gitee,
-    Juejin: Juejin,
-    QQ: QQ,
-    Weixin: Weixin,
+    CSDN,
+    Douyin,
+    GitHub,
+    Gitee,
+    Juejin,
+    QQ,
+    Weixin,
   };
 
   const getIcon = (name: string) => images[name];
 
   return (
-    <div
-      className="flex flex-col items-center pt-16 bg-no-repeat bg-white dark:bg-black-b w-full h-[350px] mb-3 tw_container"
-      style={{
-        backgroundSize: `100% 35%`,
-        backgroundImage: `url(${avatarBg.src})`,
-      }}
-    >
-      {/* 作者头像 */}
-      <div className="avatar flex justify-center items-center w-[90px] h-[90px] rounded-full bg-white shadow-md overflow-hidden">
-        <img src={user?.avatar || DEFAULT_AVATAR} alt="" className="w-[90%] h-[90%] rounded-full transition-transform hover:scale-110" />
+    <div className="relative col-span-2 overflow-hidden rounded-[8px] border border-gray-100 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.06)] transition-shadow hover:shadow-[0_18px_46px_rgba(15,23,42,0.12)] dark:border-neutral-700 dark:bg-[#1f1f1f] dark:shadow-[0_16px_40px_rgba(0,0,0,0.2)]">
+      <div
+        className="relative h-[112px] bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${avatarBg.src})`,
+        }}
+      >
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.88))] dark:bg-[linear-gradient(180deg,rgba(31,31,31,0.1),rgba(31,31,31,0.92))]" />
       </div>
 
-      {/* 作者介绍 */}
-      <div className="info text-center mt-4">
-        <h3 className="text-lg text-[#333] dark:text-white">{user?.name}</h3>
-        <p className="w-[90%] mx-auto mt-2 text-sm text-[#686868] dark:text-[#cecece]">{user?.info}</p>
-      </div>
-
-      {/* 社交账号 */}
-      <div className="socializing w-full pt-8">
-        <div className="title relative w-full h-[1px] bg-[#eee] dark:bg-black-a">
-          <span className="absolute top-[-10px] left-1/2 transform -translate-x-1/2 w-[110px] bg-white dark:bg-black-b text-center text-sm text-[#666] dark:text-[#979797]  ">社交账号</span>
+      <div className="relative -mt-12 flex justify-center">
+        <div className="avatar relative z-10 grid size-[92px] place-items-center overflow-hidden rounded-full border border-gray-100 bg-white shadow-[0_14px_34px_rgba(15,23,42,0.16)] dark:border-neutral-700 dark:bg-[#1f1f1f]">
+          <img src={user?.avatar || DEFAULT_AVATAR} alt={user?.name || '作者头像'} className="size-[82px] rounded-full object-cover transition-transform duration-500 hover:scale-105" />
         </div>
+      </div>
 
-        <div className="list flex justify-evenly w-[70%] mx-auto pt-6">
+      <div className="px-5 pb-5 pt-3 text-center">
+        <h3 className="text-xl font-black text-slate-900 dark:text-slate-100">{user?.name}</h3>
+        <p className="mx-auto mt-2 w-[90%] text-sm leading-7 text-slate-500 line-clamp-2 dark:text-slate-400">{user?.info}</p>
+      </div>
+
+      <div className="border-t border-gray-100 px-5 pb-5 pt-4 dark:border-neutral-700">
+        <div className="mb-3 text-center text-[13px] font-black tracking-[0.16em] text-[#1f6f78] dark:text-[#5fd0c0]">社交账号</div>
+
+        <div className="mx-auto flex w-[78%] justify-center gap-4">
           {socialList?.map((item: Social, index: number) => {
             const icon = getIcon(item?.name);
             if (!item?.url || !icon) return null;
 
             return (
-              <a key={index} href={item.url} target="_blank" rel="noopener noreferrer">
-                <Image src={icon} alt={item.name} title={item.name} className="w-[23px] h-[23px]" />
+              <a key={index} href={item.url} target="_blank" rel="noopener noreferrer" className="grid size-10 place-items-center rounded-[7px] border border-gray-100 bg-gray-50 transition hover:-translate-y-0.5 hover:border-gray-200 hover:bg-white hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] dark:border-neutral-700 dark:bg-[#2a2a2a] dark:hover:border-neutral-600 dark:hover:bg-[#303030]">
+                <Image src={icon} alt={item.name} title={item.name} className="size-[21px]" />
               </a>
             );
           })}
